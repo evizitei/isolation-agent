@@ -177,7 +177,7 @@ class MinimaxPlayer(IsolationPlayer):
             raise SearchTimeout()
         if depth <= 0:
             return self.score(game, self)
-        max_score =  float('inf') * -1
+        max_score =  float("-inf")
         legal_moves = game.get_legal_moves()
         if not legal_moves:
             return self.score(game, self)
@@ -254,7 +254,7 @@ class MinimaxPlayer(IsolationPlayer):
         if not legal_moves:
             return best_move
 
-        max_score = -1
+        max_score = float("-inf")
         for move in legal_moves:
             board_copy = game.forecast_move(move)
             score = self.min_value(board_copy, depth - 1)
@@ -302,10 +302,20 @@ class AlphaBetaPlayer(IsolationPlayer):
         """
         self.time_left = time_left
 
-        legal_moves = game.get_legal_moves()
-        if not legal_moves:
-            return (-1, -1)
-        return legal_moves[randint(0, len(legal_moves) - 1)]
+        # Initialize the best move so that this function returns something
+        # in case the search fails due to timeout
+        best_move = (-1, -1)
+
+        try:
+            # The try/except block will automatically catch the exception
+            # raised when the timer is about to expire.
+            return self.alphabeta(game, self.search_depth)
+
+        except SearchTimeout:
+            pass  # Handle any actions required after timeout as needed
+
+        # Return the best move from the last completed search iteration
+        return best_move
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf")):
         """Implement depth-limited minimax search with alpha-beta pruning as
@@ -355,5 +365,16 @@ class AlphaBetaPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        legal_moves = game.get_legal_moves()
+        best_move = (-1, -1)
+        if not legal_moves:
+            return best_move
+
+        max_score = float("-inf")
+        for move in legal_moves:
+            board_copy = game.forecast_move(move)
+            score = self.min_value(board_copy, depth - 1, alpha, beta)
+            if score > max_score:
+                max_score = score
+                best_move = move
+        return best_move
