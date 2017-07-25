@@ -3,6 +3,7 @@ test your agent's strength against a set of known agents using tournament.py
 and include the results in your report.
 """
 import random
+from random import randint
 
 
 class SearchTimeout(Exception):
@@ -170,6 +171,40 @@ class MinimaxPlayer(IsolationPlayer):
         # Return the best move from the last completed search iteration
         return best_move
 
+
+    def max_value(self, game, depth):
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+        if depth <= 0:
+            return self.score(game, self)
+        max_score =  float('inf') * -1
+        legal_moves = game.get_legal_moves()
+        if not legal_moves:
+            return self.score(game, self)
+        for move in legal_moves:
+            score = self.min_value(game, depth - 1)
+            if score > max_score:
+                max_score = score
+        return max_score
+
+    def min_value(self, game, depth):
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        if depth <= 0:
+            return self.score(game, self)
+
+        min_score = float('inf')
+        legal_moves = game.get_legal_moves()
+        if not legal_moves:
+            return self.score(game, self)
+        for move in legal_moves:
+            score = self.max_value(game, depth - 1)
+            if score < min_score:
+                min_score = score
+        return min_score
+
+
     def minimax(self, game, depth):
         """Implement depth-limited minimax search algorithm as described in
         the lectures.
@@ -212,8 +247,19 @@ class MinimaxPlayer(IsolationPlayer):
         if self.time_left() < self.TIMER_THRESHOLD:
             raise SearchTimeout()
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        legal_moves = game.get_legal_moves()
+        best_move = (-1, -1)
+        if not legal_moves:
+            return best_move
+
+        max_score = -1
+        for move in legal_moves:
+            board_copy = game.forecast_move(move)
+            score = self.min_value(board_copy, depth - 1)
+            if score > max_score:
+                max_score = score
+                best_move = move
+        return best_move
 
 
 class AlphaBetaPlayer(IsolationPlayer):
@@ -254,8 +300,10 @@ class AlphaBetaPlayer(IsolationPlayer):
         """
         self.time_left = time_left
 
-        # TODO: finish this function!
-        raise NotImplementedError
+        legal_moves = game.get_legal_moves()
+        if not legal_moves:
+            return (-1, -1)
+        return legal_moves[randint(0, len(legal_moves) - 1)]
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf")):
         """Implement depth-limited minimax search with alpha-beta pruning as
