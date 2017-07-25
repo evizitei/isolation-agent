@@ -182,7 +182,8 @@ class MinimaxPlayer(IsolationPlayer):
         if not legal_moves:
             return self.score(game, self)
         for move in legal_moves:
-            score = self.min_value(game, depth - 1)
+            new_game = game.forecast_move(move)
+            score = self.min_value(new_game, depth - 1)
             if score > max_score:
                 max_score = score
         return max_score
@@ -199,7 +200,8 @@ class MinimaxPlayer(IsolationPlayer):
         if not legal_moves:
             return self.score(game, self)
         for move in legal_moves:
-            score = self.max_value(game, depth - 1)
+            new_game = game.forecast_move(move)
+            score = self.max_value(new_game, depth - 1)
             if score < min_score:
                 min_score = score
         return min_score
