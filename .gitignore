@@ -1,4 +1,5 @@
-
+isolation-*.zip
+isolation-result-*.json
 # Created by https://www.gitignore.io/api/python
 
 ### Python ###
