@@ -377,4 +377,50 @@ class AlphaBetaPlayer(IsolationPlayer):
             if score > max_score:
                 max_score = score
                 best_move = move
+                if max_score >= beta:
+                    return best_move
+                if max_score > alpha:
+                    alpha = max_score
         return best_move
+
+    def min_value(self, game, depth, alpha, beta):
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        if depth <= 0:
+            return self.score(game, self)
+        min_score = float('inf')
+        legal_moves = game.get_legal_moves()
+        if not legal_moves:
+            return self.score(game, self)
+        for move in legal_moves:
+            board_copy = game.forecast_move(move)
+            score = self.max_value(board_copy, depth - 1, alpha, beta)
+            if score < min_score:
+                min_score = score
+            if min_score <= alpha:
+                return min_score
+            if min_score < beta:
+                beta = score
+        return min_score
+
+    def max_value(self, game, depth, alpha, beta):
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise SearchTimeout()
+
+        if depth <= 0:
+            return self.score(game, self)
+        max_score = float('-inf')
+        legal_moves = game.get_legal_moves()
+        if not legal_moves:
+            return self.score(game, self)
+        for move in legal_moves:
+            board_copy = game.forecast_move(move)
+            score = self.min_value(board_copy, depth - 1, alpha, beta)
+            if score > max_score:
+                max_score = score
+            if max_score >= beta:
+                return max_score
+            if max_score > alpha:
+                alpha = score
+        return max_score
