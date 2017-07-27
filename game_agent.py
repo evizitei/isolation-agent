@@ -5,6 +5,16 @@ and include the results in your report.
 import random
 from random import randint
 
+SECONDARY_MOBILITY_DELTAS = [
+  (-1, -1),
+  (-1, 1),
+  (1, -1),
+  (1, 1),
+  (-2, 0),
+  (0, -2),
+  (2, 0),
+  (0, 2)
+]
 
 class SearchTimeout(Exception):
     """Subclass base exception for code clarity. """
@@ -43,7 +53,8 @@ def custom_score(game, player):
 
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return float(own_moves - opp_moves)
+    # weighted mobility
+    return float((0.3 * own_moves) - (0.7 * opp_moves))
 
 
 def custom_score_2(game, player):
@@ -76,7 +87,13 @@ def custom_score_2(game, player):
 
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return float(own_moves - opp_moves)
+    secondary_mobility_count = 0
+    loc = game.get_player_location(player)
+    for delta in SECONDARY_MOBILITY_DELTAS:
+        target = (loc[0] + delta[0], loc[1] + delta[1])
+        if game.move_is_legal(target):
+            secondary_mobility_count += 1
+    return float(own_moves + secondary_mobility_count - opp_moves)
 
 
 def custom_score_3(game, player):
@@ -109,7 +126,13 @@ def custom_score_3(game, player):
 
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return float(own_moves - opp_moves)
+    secondary_mobility_count = 0
+    loc = game.get_player_location(player)
+    for delta in SECONDARY_MOBILITY_DELTAS:
+        target = (loc[0] + delta[0], loc[1] + delta[1])
+        if game.move_is_legal(target):
+            secondary_mobility_count += 1
+    return float((0.3 * own_moves) + (0.5 * secondary_mobility_count) - (0.7 * opp_moves))
 
 
 class IsolationPlayer:
