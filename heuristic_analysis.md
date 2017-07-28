@@ -67,7 +67,17 @@ secondaries weighted by 0.5).
            Win Rate:      62.9%        64.3%        62.9%        68.6%
 ```
 
-At least in this small sample of games, Weighted Secondary Mobility seems to play favorably against AB_Improved (6 to 4) and 
+At least in this small sample of games, Weighted Secondary Mobility seems to play favorably against AB_Improved (6 to 4) and
 eeked out a higher winning percentage overall (68.6% to 62.9%).  These are pretty close results though, I think it would be
-fair to say that it's not demonstrably better, all 3 heuristics perform fairly close to the simpler (and faster to calculate) 
+fair to say that it's not demonstrably better, all 3 heuristics perform fairly close to the simpler (and faster to calculate)
 my_moves - your_moves.
+
+## Recommendation:
+
+In choosing an algorithm, I have no reason not to prefer AB_Custom_3 (Weighted Secondary Mobility).
+It achieved a slightly higher win-rate than all 3 other algorithms and it's not markedly more complex
+than the others to calculate.  It also has the property of being intuitively appealing (that is, staying
+away from the sides and dense areas of play "feels" correct), which should make it rather
+easy to debug potential problems in implementation.  One downside is the weights
+are rather arbitrarily chosen by me.  Further work could be done to calibrate
+these weights with longer-term experimentation.
