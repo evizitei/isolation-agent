@@ -4,6 +4,8 @@ Go has long been an elusive target for AI experts, and state-of-the-art AI
 was previously thought to be many years away from competitive play with
 leading professional players.
 
+Source Paper: https://storage.googleapis.com/deepmind-media/alphago/AlphaGoNaturePaper.pdf
+
 ## Goals
 
 The main goal of the AlphaGo initiative was to apply recent advances of convolutional
