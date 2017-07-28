@@ -54,8 +54,20 @@ def custom_score(game, player):
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
     # weighted mobility
-    return float((0.3 * own_moves) - (0.7 * opp_moves))
+    base_score = float((0.7 * own_moves) - (0.3 * opp_moves))
+    bonus = 0
+    if opp_moves <= 1:
+        bonus = 3
+    return float(base_score + bonus)
 
+def secondary_score(game, player):
+    secondary_mobility_count = 0
+    loc = game.get_player_location(player)
+    for delta in SECONDARY_MOBILITY_DELTAS:
+        target = (loc[0] + delta[0], loc[1] + delta[1])
+        if game.move_is_legal(target):
+            secondary_mobility_count += 1
+    return secondary_mobility_count
 
 def custom_score_2(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -87,13 +99,10 @@ def custom_score_2(game, player):
 
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    secondary_mobility_count = 0
-    loc = game.get_player_location(player)
-    for delta in SECONDARY_MOBILITY_DELTAS:
-        target = (loc[0] + delta[0], loc[1] + delta[1])
-        if game.move_is_legal(target):
-            secondary_mobility_count += 1
-    return float(own_moves + secondary_mobility_count - opp_moves)
+    own_secondary = secondary_score(game, player)
+    opp_secondary = secondary_score(game, game.get_opponent(player))
+
+    return float((own_moves + (0.5 * own_secondary)) - (opp_moves + (0.5 * opp_secondary)))
 
 
 def custom_score_3(game, player):
@@ -126,13 +135,14 @@ def custom_score_3(game, player):
 
     own_moves = len(game.get_legal_moves(player))
     opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    secondary_mobility_count = 0
-    loc = game.get_player_location(player)
-    for delta in SECONDARY_MOBILITY_DELTAS:
-        target = (loc[0] + delta[0], loc[1] + delta[1])
-        if game.move_is_legal(target):
-            secondary_mobility_count += 1
-    return float((0.3 * own_moves) + (0.5 * secondary_mobility_count) - (0.7 * opp_moves))
+    own_secondary = secondary_score(game, player)
+    opp_secondary = secondary_score(game, game.get_opponent(player))
+
+    base_score = float((0.7 * own_moves) + (0.5 * own_secondary) - ((0.3 * opp_moves) + (0.2 * opp_secondary)))
+    bonus = 0
+    if opp_moves <= 1:
+        bonus = 3
+    return float(base_score + bonus)
 
 
 class IsolationPlayer:
@@ -409,7 +419,7 @@ class AlphaBetaPlayer(IsolationPlayer):
                 each helper function or else your agent will timeout during
                 testing.
         """
-        if self.time_left() < self.TIMER_THRESHOLD:
+        if self.time_left() < (self.TIMER_THRESHOLD * 4):
             raise SearchTimeout()
 
         legal_moves = game.get_legal_moves()
@@ -431,7 +441,7 @@ class AlphaBetaPlayer(IsolationPlayer):
         return best_move
 
     def min_value(self, game, depth, alpha, beta):
-        if self.time_left() < self.TIMER_THRESHOLD:
+        if self.time_left() < (self.TIMER_THRESHOLD * 4):
             raise SearchTimeout()
 
         if depth <= 0:
@@ -452,7 +462,7 @@ class AlphaBetaPlayer(IsolationPlayer):
         return min_score
 
     def max_value(self, game, depth, alpha, beta):
-        if self.time_left() < self.TIMER_THRESHOLD:
+        if self.time_left() < (self.TIMER_THRESHOLD * 4):
             raise SearchTimeout()
 
         if depth <= 0:
