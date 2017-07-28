@@ -50,18 +50,24 @@ secondaries weighted by 0.5).
 ## tournament results:
 
 ```
-Match #   Opponent    AB_Improved   AB_Custom   AB_Custom_2  AB_Custom_3
+                        *************************
+                             Playing Matches
+                        *************************
+
+ Match #   Opponent    AB_Improved   AB_Custom   AB_Custom_2  AB_Custom_3
                         Won | Lost   Won | Lost   Won | Lost   Won | Lost
-    1       Random       8  |   2     7  |   3     8  |   2    10  |   0
-    2       MM_Open      3  |   7     7  |   3     6  |   4     5  |   5
-    3      MM_Center     9  |   1     9  |   1     9  |   1     6  |   4
-    4     MM_Improved    8  |   2     6  |   4     5  |   5     5  |   5
-    5       AB_Open      6  |   4     3  |   7     6  |   4     6  |   4
-    6      AB_Center     5  |   5     7  |   3     7  |   3     5  |   5
-    7     AB_Improved    8  |   2     4  |   6     4  |   6     5  |   5
+    1       Random       6  |   4    10  |   0     8  |   2     9  |   1
+    2       MM_Open      7  |   3     6  |   4     6  |   4     7  |   3
+    3      MM_Center     9  |   1     7  |   3     7  |   3     9  |   1
+    4     MM_Improved    6  |   4     6  |   4     8  |   2     8  |   2
+    5       AB_Open      5  |   5     5  |   5     6  |   4     4  |   6
+    6      AB_Center     6  |   4     6  |   4     6  |   4     5  |   5
+    7     AB_Improved    5  |   5     5  |   5     3  |   7     6  |   4
 --------------------------------------------------------------------------
-           Win Rate:      67.1%        61.4%        64.3%        60.0%
+           Win Rate:      62.9%        64.3%        62.9%        68.6%
 ```
 
-Sadly, none of my methods over-matched AB_Improved, though Weighted Secondary Mobility fought to a draw against AB improved.
-( it was still outperformed by AB_Improved against MM_Center and MM_IMproved).
+At least in this small sample of games, Weighted Secondary Mobility seems to play favorably against AB_Improved (6 to 4) and 
+eeked out a higher winning percentage overall (68.6% to 62.9%).  These are pretty close results though, I think it would be
+fair to say that it's not demonstrably better, all 3 heuristics perform fairly close to the simpler (and faster to calculate) 
+my_moves - your_moves.
